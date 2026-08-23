@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from api_routers import documents, followup, sessions
+from  api_routers import documents, followup, sessions
 
 app = FastAPI(
     title="Accounting Client Onboarding Agent (Demo)",
