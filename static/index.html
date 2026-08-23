@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Onboarding — Intake Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAF9F6;
+    --paper-inset: #F2F0E9;
+    --ink: #14213D;
+    --ink-soft: #4A5268;
+    --ledger-green: #1F5C42;
+    --ledger-green-tint: #E7F0EA;
+    --flag-amber: #A9631D;
+    --flag-amber-tint: #F7ECDD;
+    --missing-gray: #8B8578;
+    --missing-gray-tint: #EFEDE7;
+    --rule: #DDD8CB;
+    --rule-strong: #C9C3B3;
+    --shadow: 0 1px 2px rgba(20,33,61,0.06), 0 4px 16px rgba(20,33,61,0.05);
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  .sub{
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+  }
+
+  .sub .sep{ margin: 0 8px; color: var(--rule-strong); }
+
+  .card{
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  .card h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin: 0 0 18px;
+  }
+
+  label{
+    display:block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  input[type="text"], select{
+    width: 100%;
+    padding: 10px 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  input[type="text"]:focus, select:focus, button:focus-visible{
+    outline: 2px solid var(--ledger-green);
+    outline-offset: 1px;
+  }
+
+  button{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+  }
+  button.secondary{
+    background: transparent;
+    color: var(--ink);
+  }
+  button:disabled{ opacity: 0.5; cursor: not-allowed; }
+  button.small{ padding: 6px 12px; font-size: 12px; }
+
+  .existing-sessions{
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--rule);
+  }
+  .existing-sessions .row{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .existing-sessions .row button{ font-size: 12px; padding: 5px 10px; }
+
+  /* --- progress --- */
+  .progress-line{
+    display:flex; align-items:baseline; gap: 10px;
+    margin-bottom: 22px;
+  }
+  .progress-num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    color: var(--ledger-green);
+  }
+  .progress-label{ font-size: 13px; color: var(--ink-soft); }
+
+  /* --- ledger rows --- */
+  .ledger-row{
+    display:flex;
+    align-items:flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ledger-row:last-child{ border-bottom:none; }
+
+  .stamp-slot{
+    width: 56px; height: 56px;
+    flex: none;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .stamp{
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align:center;
+    line-height: 1.15;
+    border: 1.5px solid currentColor;
+    transform: rotate(-8deg);
+    animation: stampdown 220ms ease-out;
+  }
+  @keyframes stampdown{
+    0%{ transform: rotate(-8deg) scale(1.6); opacity:0; }
+    60%{ transform: rotate(-8deg) scale(0.94); opacity:1; }
+    100%{ transform: rotate(-8deg) scale(1); opacity:1; }
+  }
+  .stamp.received{ color: var(--ledger-green); background: var(--ledger-green-tint); }
+  .stamp.flagged{ color: var(--flag-amber); background: var(--flag-amber-tint); }
+  .stamp.missing{ color: var(--missing-gray); background: var(--missing-gray-tint); border-style: dashed; transform: rotate(0); animation:none; }
+
+  .ledger-body{ flex: 1; min-width: 0; }
+  .ledger-label{ font-size: 15px; font-weight: 500; margin: 2px 0 3px; }
+  .ledger-meta{ font-size: 13px; color: var(--ink-soft); }
+  .ledger-meta.flagged-text{ color: var(--flag-amber); }
+  .optional-tag{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 6px;
+  }
+
+  /* --- upload --- */
+  .dropzone{
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: 8px;
+    padding: 22px;
+    text-align:center;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--paper-inset);
+  }
+  .dropzone input{ margin-top: 10px; }
+
+  /* --- followup --- */
+  .followup-msg{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--paper-inset);
+    border-left: 3px solid var(--ledger-green);
+    padding: 16px 18px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+  }
+
+  .status-msg{
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+  }
+  .status-msg.error{ color: #A32323; }
+
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Client Onboarding — Intake Ledger</p>
+  <h1 id="pageTitle">New client folder</h1>
+  <p class="sub" id="pageSub">Start a session or open one already in progress.</p>
+
+  <!-- SESSION SETUP -->
+  <div class="card" id="setupCard">
+    <h2>Start a new onboarding session</h2>
+    <label for="clientName">Client name</label>
+    <input type="text" id="clientName" placeholder="e.g. Bright Path Consulting LLC" />
+
+    <label for="checklistType">Checklist</label>
+    <select id="checklistType">
+      <option value="new_business_bookkeeping">New Business — Bookkeeping Onboarding</option>
+      <option value="individual_tax">Individual Tax Client</option>
+      <option value="cross_border">Cross-Border / E2 Client</option>
+    </select>
+
+    <button id="createBtn">Create session</button>
+    <span class="status-msg" id="createStatus"></span>
+
+    <div class="existing-sessions" id="existingSessions"></div>
+  </div>
+
+  <!-- ACTIVE SESSION -->
+  <div id="sessionView" class="hidden">
+
+    <div class="card">
+      <div class="progress-line">
+        <span class="progress-num" id="progressNum">0/0</span>
+        <span class="progress-label">required documents received</span>
+      </div>
+      <div id="checklistList"></div>
+    </div>
+
+    <div class="card">
+      <h2>Add a document</h2>
+      <div class="dropzone">
+        Choose a file to upload for this client
+        <br/>
+        <input type="file" id="fileInput" accept=".pdf,.txt" />
+      </div>
+      <p class="status-msg" id="uploadStatus"></p>
+    </div>
+
+    <div class="card">
+      <h2>Follow-up message</h2>
+      <button id="followupBtn" class="secondary">Generate follow-up</button>
+      <button id="copyBtn" class="small secondary hidden">Copy</button>
+      <p class="status-msg" id="followupStatus"></p>
+      <div id="followupMsg" class="followup-msg hidden"></div>
+    </div>
+
+    <button class="secondary small" id="backBtn">← Back to session list</button>
+  </div>
+
+</div>
+
+<script>
+const API = ""; // same-origin — this page is served by the FastAPI app itself
+
+let currentSessionId = null;
+
+const el = (id) => document.getElementById(id);
+
+async function api(path, options={}) {
+  const res = await fetch(API + path, options);
+  if (!res.ok) {
+    let detail = res.statusText;
+    try { const body = await res.json(); detail = body.detail || JSON.stringify(body); } catch(e) {}
+    throw new Error(detail);
+  }
+  return res.json();
+}
+
+function checklistTypeLabel(t) {
+  return {
+    new_business_bookkeeping: "New Business — Bookkeeping Onboarding",
+    individual_tax: "Individual Tax Client",
+    cross_border: "Cross-Border / E2 Client",
+  }[t] || t;
+}
+
+async function loadExistingSessions() {
+  const box = el('existingSessions');
+  box.innerHTML = '<label>Existing sessions</label>';
+  try {
+    const sessions = await api('/sessions');
+    if (sessions.length === 0) {
+      box.innerHTML += '<p class="status-msg">No sessions yet — create one above.</p>';
+      return;
+    }
+    sessions.slice().reverse().forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <span>${s.client_name} <span class="ledger-meta">— ${checklistTypeLabel(s.checklist_type)}</span></span>
+        <button class="secondary small" data-id="${s.id}">Open</button>
+      `;
+      row.querySelector('button').onclick = () => openSession(s.id);
+      box.appendChild(row);
+    });
+  } catch (e) {
+    box.innerHTML += `<p class="status-msg error">Could not load sessions: ${e.message}</p>`;
+  }
+}
+
+el('createBtn').onclick = async () => {
+  const name = el('clientName').value.trim();
+  const type = el('checklistType').value;
+  const status = el('createStatus');
+  if (!name) { status.textContent = 'Enter a client name first.'; status.className='status-msg error'; return; }
+  status.textContent = 'Creating…'; status.className = 'status-msg';
+  try {
+    const params = new URLSearchParams({ client_name: name, checklist_type: type });
+    const session = await api('/sessions?' + params.toString(), { method: 'POST' });
+    status.textContent = '';
+    openSession(session.id);
+  } catch (e) {
+    status.textContent = 'Failed: ' + e.message;
+    status.className = 'status-msg error';
+  }
+};
+
+async function openSession(id) {
+  currentSessionId = id;
+  el('setupCard').classList.add('hidden');
+  el('sessionView').classList.remove('hidden');
+  el('followupMsg').classList.add('hidden');
+  el('copyBtn').classList.add('hidden');
+  el('followupStatus').textContent = '';
+  await refreshSessionState();
+}
+
+el('backBtn').onclick = () => {
+  currentSessionId = null;
+  el('sessionView').classList.add('hidden');
+  el('setupCard').classList.remove('hidden');
+  el('pageTitle').textContent = 'New client folder';
+  el('pageSub').textContent = 'Start a session or open one already in progress.';
+  loadExistingSessions();
+};
+
+async function refreshSessionState() {
+  const state = await api(`/sessions/${currentSessionId}`);
+  el('pageTitle').textContent = state.session.client_name;
+  el('pageSub').innerHTML = `${checklistTypeLabel(state.session.checklist_type)}<span class="sep">·</span>opened ${new Date(state.session.created_at).toLocaleDateString()}`;
+
+  const requiredItems = state.checklist.filter(i => i.required);
+  const requiredReceived = requiredItems.filter(i => i.status === 'received').length;
+  el('progressNum').textContent = `${requiredReceived}/${requiredItems.length}`;
+
+  const list = el('checklistList');
+  list.innerHTML = '';
+  state.checklist.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'ledger-row';
+
+    let stampClass = 'missing', stampText = 'MISSING';
+    if (item.status === 'received') { stampClass = 'received'; stampText = 'RECEIVED'; }
+    if (item.status === 'flagged') { stampClass = 'flagged'; stampText = 'REVIEW'; }
+
+    let meta = '';
+    if (item.status === 'flagged' && item.flag_reason) {
+      meta = `<div class="ledger-meta flagged-text">${item.flag_reason}</div>`;
+    } else if (item.status === 'missing') {
+      meta = `<div class="ledger-meta">Not yet received</div>`;
+    } else {
+      meta = `<div class="ledger-meta">On file</div>`;
+    }
+
+    row.innerHTML = `
+      <div class="stamp-slot"><div class="stamp ${stampClass}">${stampText}</div></div>
+      <div class="ledger-body">
+        <div class="ledger-label">${item.label}${!item.required ? '<span class="optional-tag">optional</span>' : ''}</div>
+        ${meta}
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+el('fileInput').onchange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = el('uploadStatus');
+  status.textContent = 'Uploading and classifying — this calls a live LLM, may take a few seconds…';
+  status.className = 'status-msg';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const doc = await api(`/sessions/${currentSessionId}/documents`, { method: 'POST', body: formData });
+    if (doc.flag_reason) {
+      status.textContent = `Uploaded — flagged: ${doc.flag_reason}`;
+      status.className = 'status-msg error';
+    } else if (doc.detected_type) {
+      status.textContent = `Matched to "${doc.detected_type}" (confidence ${(doc.confidence*100).toFixed(0)}%)`;
+      status.className = 'status-msg';
+    } else {
+      status.textContent = `Uploaded, but no checklist match found.`;
+      status.className = 'status-msg error';
+    }
+    e.target.value = '';
+    await refreshSessionState();
+  } catch (err) {
+    status.textContent = 'Upload failed: ' + err.message;
+    status.className = 'status-msg error';
+  }
+};
+
+el('followupBtn').onclick = async () => {
+  const status = el('followupStatus');
+  const box = el('followupMsg');
+  status.textContent = 'Drafting…';
+  status.className = 'status-msg';
+  box.classList.add('hidden');
+  el('copyBtn').classList.add('hidden');
+  try {
+    const result = await api(`/sessions/${currentSessionId}/followup`, { method: 'POST' });
+    if (!result.followup_message) {
+      status.textContent = result.note || 'Nothing to follow up on — checklist is complete.';
+      status.className = 'status-msg';
+    } else {
+      status.textContent = '';
+      box.textContent = result.followup_message;
+      box.classList.remove('hidden');
+      el('copyBtn').classList.remove('hidden');
+    }
+  } catch (e) {
+    status.textContent = 'Failed: ' + e.message;
+    status.className = 'status-msg error';
+  }
+};
+
+el('copyBtn').onclick = () => {
+  navigator.clipboard.writeText(el('followupMsg').textContent);
+  el('copyBtn').textContent = 'Copied';
+  setTimeout(() => { el('copyBtn').textContent = 'Copy'; }, 1500);
+};
+
+loadExistingSessions();
+</script>
+</body>
+</html>
