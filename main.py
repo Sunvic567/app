@@ -31,7 +31,7 @@ app.include_router(followup.router)
 # Mounted AFTER the API routers on purpose: FastAPI matches routes in the
 # order they're added, so /sessions etc. above still resolve to the API,
 # not this static mount.
-app.mount("/app", StaticFiles(directory="app/static", html=True), name="frontend")
+app.mount("/app", StaticFiles(directory="static", html=True), name="frontend")
 
 
 @app.get("/")
