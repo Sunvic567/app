@@ -9,7 +9,7 @@ are composed.
 """
 from typing import Optional, TypedDict
 
-from app.schema.models import ChecklistItemDefinition
+from schema.models import ChecklistItemDefinition
 
 
 class AgentState(TypedDict, total=False):

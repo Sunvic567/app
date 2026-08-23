@@ -11,8 +11,8 @@ routers or agent code that call it.
 import uuid
 from datetime import datetime
 
-from app.helper.checklists import CHECKLISTS
-from app.schema.models import (
+from helper.checklists import CHECKLISTS
+from schema.models import (
     ChecklistItemState,
     ClientSession,
     ChecklistTemplateType,

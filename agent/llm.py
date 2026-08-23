@@ -9,7 +9,7 @@ import os
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from app.schema.models import ClassifyResult
+from schema.models import ClassifyResult
 
 _classify_llm = None
 _followup_llm = None

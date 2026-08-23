@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from app.schema.models import ChecklistTemplateType, ClientSession, SessionStateResponse
-from app.memory.store import store
+from schema.models import ChecklistTemplateType, ClientSession, SessionStateResponse
+from memory.store import store
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 

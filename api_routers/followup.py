@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from app.agent.followup import build_followup_message
-from app.memory.store import store
+from agent.followup import build_followup_message
+from memory.store import store
 
 router = APIRouter(prefix="/sessions/{session_id}/followup", tags=["followup"])
 

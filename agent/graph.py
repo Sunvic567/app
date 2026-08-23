@@ -11,12 +11,12 @@ graph simple and independently testable.
 """
 from langgraph.graph import StateGraph, END
 
-from app.agent.nodes import (
+from agent.nodes import (
     classify_document_node,
     match_to_checklist_node,
     validate_completeness_node,
 )
-from app.agent.state import AgentState
+from agent.state import AgentState
 
 
 def build_document_graph():

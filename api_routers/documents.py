@@ -2,11 +2,11 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, UploadFile
 
-from app.agent.graph import run_document_classification
-from app.helper.checklists import CHECKLISTS
-from app.helper.extraction import extract_text
-from app.schema.models import UploadedDocument
-from app.memory.store  import store
+from agent.graph import run_document_classification
+from helper.checklists import CHECKLISTS
+from helper.extraction import extract_text
+from schema.models import UploadedDocument
+from memory.store  import store
 
 router = APIRouter(prefix="/sessions/{session_id}/documents", tags=["documents"])
 

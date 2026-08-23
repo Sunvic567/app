@@ -3,7 +3,7 @@ Checklist templates. In production these would live in Supabase and be
 editable per firm/client-type; for the demo they're defined here so the
 whole flow is inspectable and easy to extend.
 """
-from app.schema.models import ChecklistItemDefinition, ChecklistTemplateType
+from schema.models import ChecklistItemDefinition, ChecklistTemplateType
 
 CHECKLISTS: dict[ChecklistTemplateType, list[ChecklistItemDefinition]] = {
     ChecklistTemplateType.NEW_BUSINESS_BOOKKEEPING: [

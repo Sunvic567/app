@@ -2,9 +2,9 @@
 Node functions for the onboarding graph. Each node takes the AgentState
 and returns a dict of the fields it updates — standard LangGraph pattern.
 """
-from app.agent.llm import classify_document as llm_classify
+from agent.llm import classify_document as llm_classify
 
-from app.agent.state import AgentState
+from agent.state import AgentState
 
 
 def classify_document_node(state: AgentState) -> dict:
